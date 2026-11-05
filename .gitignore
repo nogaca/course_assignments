@@ -1,0 +1,8 @@
+# macOS files
+.DS_Store
+
+# Temporary Excel files
+~$*.xlsx
+
+# Python virtual environments
+.venv/
