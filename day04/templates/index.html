@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Protein Sequence Analyzer</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="{{ url_for('index') }}">
+      <span class="brand-mark" aria-hidden="true">P</span>
+      <span>Protein Sequence Analyzer</span>
+    </a>
+    <span class="topbar-label">DAY 04 / BIOINFORMATICS</span>
+  </header>
+
+  <main class="page">
+    <section class="intro" aria-labelledby="page-title">
+      <p class="eyebrow">FASTA / LENGTH</p>
+      <h1 id="page-title">Protein Sequence Analyzer</h1>
+      <p class="intro-note">Sequence length, clearly counted.</p>
+      <div class="sequence-decoration" aria-hidden="true">
+        <span>MKW</span><span>VTF</span><span>ISL</span><span>LFL</span><span>FSS</span>
+      </div>
+    </section>
+
+    <section class="workspace" aria-label="Sequence input">
+      <form method="post" enctype="multipart/form-data">
+        <fieldset class="mode-fieldset">
+          <legend>Sequence source</legend>
+          <div class="mode-switch">
+            <label>
+              <input type="radio" name="input_mode" value="paste" checked>
+              <span>Paste FASTA</span>
+            </label>
+            <label>
+              <input type="radio" name="input_mode" value="upload">
+              <span>Upload file</span>
+            </label>
+          </div>
+        </fieldset>
+
+        <div class="input-panel" id="paste-panel">
+          <label for="fasta-text">FASTA sequence</label>
+          <textarea id="fasta-text" name="fasta_text" rows="8" placeholder=">protein_name&#10;MKWVTFISLLFLFSSAYS&#10;>another_protein&#10;MKTIIALSYIFCLVFA"></textarea>
+        </div>
+
+        <div class="input-panel" id="file-panel" hidden>
+          <label for="fasta-file">Choose a FASTA file</label>
+          <div class="file-picker">
+            <input id="fasta-file" name="fasta_file" type="file" accept=".fasta,.fa,.fas,.txt">
+            <span class="file-note" id="file-note">No file selected</span>
+          </div>
+        </div>
+
+        <button class="analyze-button" type="submit">
+          <span>Analyze sequences</span>
+          <span class="button-arrow" aria-hidden="true">&#8594;</span>
+        </button>
+      </form>
+    </section>
+
+    {% if error %}
+    <p class="message error-message" role="alert">{{ error }}</p>
+    {% endif %}
+
+    {% if results is not none %}
+    <section class="results" aria-labelledby="results-title">
+      <div class="results-heading">
+        <div>
+          <p class="eyebrow">ANALYSIS</p>
+          <h2 id="results-title">Protein lengths</h2>
+        </div>
+        <span class="result-count">{{ results|length }} proteins</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Protein name</th>
+              <th scope="col">Length (amino acids)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for protein in results %}
+            <tr>
+              <td>{{ protein.name }}</td>
+              <td class="length-cell">{{ protein.length }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+    {% endif %}
+  </main>
+
+  <script>
+    const modeInputs = document.querySelectorAll('input[name="input_mode"]');
+    const pastePanel = document.getElementById("paste-panel");
+    const filePanel = document.getElementById("file-panel");
+    const fileInput = document.getElementById("fasta-file");
+    const fileNote = document.getElementById("file-note");
+
+    // Show only the input panel selected by the user.
+    function updateInputMode() {
+      const uploadSelected = document.querySelector('input[name="input_mode"]:checked').value === "upload";
+      pastePanel.hidden = uploadSelected;
+      filePanel.hidden = !uploadSelected;
+      document.getElementById("fasta-text").disabled = uploadSelected;
+      fileInput.disabled = !uploadSelected;
+    }
+
+    modeInputs.forEach((input) => input.addEventListener("change", updateInputMode));
+    fileInput.addEventListener("change", () => {
+      fileNote.textContent = fileInput.files.length ? fileInput.files[0].name : "No file selected";
+    });
+  </script>
+</body>
+</html>
