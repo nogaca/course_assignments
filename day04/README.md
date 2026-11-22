@@ -40,3 +40,25 @@ Click "Analyze sequences" to calculate the length of each protein.
 The results will appear in a table showing the protein names and their lengths in amino acids.
 
 To stop the application, press Ctrl+C in the terminal.
+
+## Day 05 Assignment – Automated Tests
+
+For Day 05, I used GitHub Copilot in VS Code to create automated tests for the protein sequence analyzer from Day 04.
+
+I used pytest to test the FASTA parsing and protein length calculations.
+
+The tests check:
+- A single protein sequence with a known length.
+- Multiple protein sequences in one FASTA input.
+- Sequences split across multiple lines.
+- Empty or invalid FASTA input.
+
+All 5 tests passed successfully.
+
+### How to run the tests
+
+From the `day04` folder, run:
+
+```bash
+python3 -m pip install pytest
+python3 -m pytest test_protein_lengths.py
